@@ -5,23 +5,43 @@ on:
     branches:
       - main
 
+# Obrigatório se for usar a Role OIDC (Recomendado para evitar o erro 254)
 permissions:
   id-token: write
   contents: read
 
 jobs:
-  trivy-scan:
-    name: Run Trivy Scanner
+  terraform:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout código
+        uses: actions/checkout@v4 # Atualizado para v4 (evita warnings de Node)
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3 # Atualizado para v3
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: ./terraform
+
+      - name: Terraform Validate
+        run: terraform validate
+        working-directory: ./terraform
 
       - name: Scan com Trivy (IaC)
         uses: aquasecurity/trivy-action@master
         with:
           scan-type: "config"
-          scan-ref: "."
+          scan-ref: "./terraform" # Garante que ele vai olhar a pasta certa
           severity: "CRITICAL"
-          exit-code: "1"
+          exit-code: "1" # Vai quebrar a esteira se o S3 estiver vulnerável (mude para "0" se quiser apenas testar o Apply mesmo com erro)
+
+      - name: Terraform Plan
+        run: terraform plan
+        working-directory: ./terraform
+
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main'
+        run: terraform apply -auto-approve
+        working-directory: ./terraform
