@@ -1,0 +1,24 @@
+name: Security Scan - Trivy
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  trivy-scan:
+    name: Run Trivy Scanner
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Trivy Scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'config'
+          scan-ref: '.'
+          exit-code: '0'
+          severity: 'HIGH,CRITICAL'
