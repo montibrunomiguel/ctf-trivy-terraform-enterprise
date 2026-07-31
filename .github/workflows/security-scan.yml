@@ -1,10 +1,13 @@
-name: Security Scan - Trivy
+name: Terraform Secure Pipeline
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
   trivy-scan:
@@ -15,10 +18,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Run Trivy Scanner
+      - name: Scan com Trivy (IaC)
         uses: aquasecurity/trivy-action@master
         with:
-          scan-type: 'config'
-          scan-ref: '.'
-          exit-code: '0'
-          severity: 'HIGH,CRITICAL'
+          scan-type: "config"
+          scan-ref: "."
+          severity: "CRITICAL"
+          exit-code: "1"
