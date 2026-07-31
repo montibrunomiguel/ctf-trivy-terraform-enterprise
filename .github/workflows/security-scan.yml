@@ -29,11 +29,12 @@ jobs:
         run: terraform validate
         working-directory: ./terraform
 
-      - name: Scan com Trivy (IaC)
+      - name: Scan com Trivy (IaC e Secrets)
         uses: aquasecurity/trivy-action@master
         with:
-          scan-type: "config,secret"
-          scan-ref: "./terraform" # Garante que ele vai olhar a pasta certa
+          scan-type: "fs"             # Usa o scanner de Filesystem
+          scan-ref: "./terraform"      # Aponta para a pasta do Terraform
+          scanners: "misconfig,secret" # Habilita varredura de IaC e de Segredos simultaneamente
           severity: "CRITICAL,HIGH"
           exit-code: "1" # Vai quebrar a esteira se o S3 estiver vulnerável (mude para "0" se quiser apenas testar o Apply mesmo com erro)
 
