@@ -3,7 +3,7 @@ name: Terraform Secure Pipeline
 on:
   push:
     branches:
-      - main
+      - master
 
 # Obrigatório se for usar a Role OIDC (Recomendado para evitar o erro 254)
 permissions:
