@@ -34,7 +34,7 @@ jobs:
         with:
           scan-type: "config"
           scan-ref: "./terraform" # Garante que ele vai olhar a pasta certa
-          severity: "CRITICAL"
+          severity: "CRITICAL, HIGH"
           exit-code: "1" # Vai quebrar a esteira se o S3 estiver vulnerável (mude para "0" se quiser apenas testar o Apply mesmo com erro)
 
       - name: Terraform Plan
